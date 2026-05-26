@@ -1,0 +1,73 @@
+{
+  "id": "7e9c20432e58",
+  "name": "carte_sorts_homebrew",
+  "created_at": "2026-05-25T10:02:33",
+  "updated_at": "2026-05-25T10:03:39",
+  "zones": [
+    {
+      "id": "z_mpkx5kf0",
+      "name": "Temps d'incantation",
+      "type": "text",
+      "x": 191,
+      "y": 112,
+      "width": 217,
+      "height": 26,
+      "visible": true,
+      "layer": 0,
+      "default": "test",
+      "style": {
+        "color": "#000000",
+        "font_size": 24,
+        "bold": false,
+        "font_path": "",
+        "align": "left",
+        "valign": "top",
+        "line_gap": 4,
+        "outline": false,
+        "outline_color": "#000000",
+        "outline_width": 1,
+        "shadow": false,
+        "auto_fit": true,
+        "cover_color": "#FFFFFF"
+      }
+    },
+    {
+      "id": "z_mpkx6aro",
+      "name": "Image",
+      "type": "image",
+      "x": 109,
+      "y": 369,
+      "width": 268,
+      "height": 188,
+      "visible": true,
+      "layer": 1,
+      "default": "",
+      "style": {
+        "color": "#000000",
+        "font_size": 24,
+        "bold": false,
+        "font_path": "",
+        "align": "left",
+        "valign": "top",
+        "line_gap": 4,
+        "outline": false,
+        "outline_color": "#000000",
+        "outline_width": 1,
+        "shadow": false,
+        "auto_fit": true,
+        "cover_color": "#FFFFFF"
+      }
+    }
+  ],
+  "img_w": 489,
+  "img_h": 693,
+  "settings": {
+    "snap": true,
+    "grid": 10,
+    "font_path": ""
+  },
+  "favorite": false,
+  "has_back": true,
+  "card_w_mm": 63.5,
+  "card_h_mm": 88.9
+}

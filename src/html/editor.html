@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Éditeur — CardCrafter{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="/static/css/editor.css">{% endblock %}
+
+{% block nav_extra %}
+  <a href="/editor/{{ tid }}" class="active">✏ Éditeur</a>
+  <a href="/generator/{{ tid }}">🎴 Générateur</a>
+{% endblock %}
+
+{% block content %}
+<div class="editor-layout" id="editor-layout">
+
+  <!-- Toolbar -->
+  <div class="editor-toolbar">
+    <span class="tb-label" id="tpl-name-label">…</span>
+    <div class="tb-sep"></div>
+
+    <button class="tb-btn active" id="tool-select" onclick="setTool('select')" title="Sélectionner (V)">
+      ↖ Sélect.
+    </button>
+    <button class="tb-btn" id="tool-draw" onclick="setTool('draw')" title="Dessiner une zone (D)">
+      ▭ Dessiner
+    </button>
+    <button class="tb-btn tool-detect" id="tool-detect" onclick="setTool('detect')" title="Détecter par couleur (C)">
+      🎯 Détecter
+    </button>
+
+    <div class="tb-sep"></div>
+    <label class="tb-label">Tolérance</label>
+    <input type="range" id="tol-slider" min="5" max="80" value="30"
+           style="width:90px;accent-color:var(--gold)" title="Tolérance détection couleur"
+           oninput="document.getElementById('tol-val').textContent=this.value">
+    <span id="tol-val" style="font-size:.72rem;color:var(--text2);min-width:20px">30</span>
+
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="undoAction()" id="btn-undo" title="Annuler (Ctrl+Z)">↩ Undo</button>
+    <button class="tb-btn" onclick="redoAction()" id="btn-redo" title="Rétablir (Ctrl+Y)">↪ Redo</button>
+
+    <div class="tb-sep"></div>
+    <button class="tb-btn" onclick="toggleGrid()" id="btn-grid" title="Grille (G)">⊞ Grille</button>
+    <button class="tb-btn" onclick="resetView()"  title="Réinitialiser la vue (Home)">⌂ Vue</button>
+
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="tb-btn" onclick="location.href='/generator/{{ tid }}'">🎴 Générateur →</button>
+      <button class="tb-btn active" onclick="saveZones()" id="btn-save" style="color:var(--cyan)">
+        💾 Sauvegarder
+      </button>
+    </div>
+  </div>
+
+  <!-- Left panel : zone list -->
+  <div class="editor-left">
+    <div class="panel-title">Zones</div>
+    <div class="zone-list" id="zone-list">
+      <div class="zone-empty">Aucune zone — dessinez ou détectez</div>
+    </div>
+    <div class="panel-section" style="padding:10px;border-top:1px solid var(--border)">
+      <button class="btn btn-secondary btn-sm w-full" onclick="setTool('draw')">＋ Nouvelle zone</button>
+    </div>
+  </div>
+
+  <!-- Center : canvas -->
+  <div class="editor-canvas-wrap mode-select" id="canvas-wrap">
+    <div id="editor-viewport">
+      <img id="tpl-image" src="" alt="template">
+      <canvas id="editor-canvas"></canvas>
+    </div>
+    <div class="editor-overlay" id="editor-overlay"
+         onmousedown="onMouseDown(event)"
+         onmousemove="onMouseMove(event)"
+         onmouseup="onMouseUp(event)"
+         onwheel="onWheel(event)"
+         oncontextmenu="event.preventDefault()">
+    </div>
+
+    <!-- Hint -->
+    <div class="zone-add-hint hidden" id="draw-hint">Cliquez-glissez pour dessiner une zone</div>
+    <div class="zone-add-hint hidden" id="detect-hint" style="color:var(--gold);border-color:var(--gold)44">Cliquez sur une couleur du template</div>
+
+    <!-- Zoom -->
+    <div class="zoom-indicator">
+      <button onclick="zoom(-0.15)">−</button>
+      <span id="zoom-label">100%</span>
+      <button onclick="zoom(+0.15)">＋</button>
+    </div>
+  </div>
+
+  <!-- Right panel : properties -->
+  <div class="editor-right">
+    <div class="panel-title">Propriétés</div>
+    <div id="props-panel">
+      <div class="props-empty">Sélectionnez ou créez une zone</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Zone name/type dialog -->
+<div class="modal-overlay hidden" id="zone-dialog-overlay">
+  <div class="modal" style="width:360px">
+    <div class="modal-head">
+      <h2 id="zone-dialog-title">Nouvelle zone</h2>
+      <button class="btn btn-ghost btn-sm" onclick="cancelZoneDialog()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Nom de la zone</label>
+        <input type="text" id="zd-name" placeholder="Ex: titre, description, image_personnage…" maxlength="40"
+               onkeydown="if(event.key==='Enter')confirmZoneDialog()">
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select id="zd-type">
+          <option value="text">Texte</option>
+          <option value="image">Image</option>
+          <option value="text_cover">Texte (recouvre loriginal)</option>
+        </select>
+      </div>
+      <div class="form-group" id="zd-default-group">
+        <label>Valeur par défaut (optionnel)</label>
+        <input type="text" id="zd-default" placeholder="Valeur affichée si vide">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost btn-sm" onclick="cancelZoneDialog()">Annuler</button>
+      <button class="btn btn-primary btn-sm" onclick="confirmZoneDialog()">Créer la zone</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>const TEMPLATE_ID = "{{ tid }}";</script>
+<script src="/static/js/app.js"></script>
+<script src="/static/js/editor.js"></script>
+{% endblock %}

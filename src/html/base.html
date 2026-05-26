@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}CardCrafter{% endblock %}</title>
+<link rel="icon" type="image/x-icon" href="/assets/icon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/main.css">
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<header class="topbar">
+  <a href="/" class="topbar-logo">
+    <img src="/assets/icon.ico" alt="" style="width:24px;height:24px;object-fit:contain;border-radius:4px" onerror="this.style.display='none'">
+    <span class="logo-name">Card<span>Crafter</span></span>
+    <span class="logo-ver">v1.0</span>
+  </a>
+  <nav class="topbar-nav">
+    <a href="/" {% if request.url.path == '/' %}class="active"{% endif %}>⬡ Galerie</a>
+    {% block nav_extra %}{% endblock %}
+  </nav>
+  <div class="topbar-right">
+    <button class="btn btn-ghost btn-sm" onclick="openSettings()">⚙ Settings</button>
+  </div>
+</header>
+
+<div class="page">{% block content %}{% endblock %}</div>
+
+<!-- Settings modal -->
+<div class="modal-overlay hidden" id="settings-overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>⚙ Paramètres globaux</h2>
+      <button class="btn btn-ghost btn-sm" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="modal-body" id="settings-body"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost btn-sm" onclick="closeSettings()">Annuler</button>
+      <button class="btn btn-primary btn-sm" onclick="saveSettings()">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="/static/js/app.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
